@@ -3,10 +3,13 @@ import {
     savingNewNote,
     setActiveNote,
     setNotes,
+    setPhotosToActiveNote,
+    setSaving,
+    updateNote,
 } from './jounalSlice';
 import { collection, doc, setDoc } from 'firebase/firestore/lite';
 import { FireBaseDB } from '../../firebase/config';
-import { loadNotes } from '../../helpers';
+import { fileUpload, loadNotes } from '../../helpers';
 
 export const startNewNote = () => {
     return async (dispatch, getState) => {
@@ -44,6 +47,8 @@ export const startLoadingNotes = () => {
 
 export const startSaveNote = () => {
     return async (dispatch, getState) => {
+        dispatch(setSaving());
+
         const { uid } = getState().auth;
         const { active: note } = getState().journal;
 
@@ -52,5 +57,25 @@ export const startSaveNote = () => {
 
         const docRef = doc(FireBaseDB, `${uid}/journal/notes/${note.id}`);
         await setDoc(docRef, noteToFireStore, { merge: true });
+
+        dispatch(updateNote(note));
+    };
+};
+
+export const startUploadingFiles = (files = []) => {
+    return async (dispatch) => {
+        dispatch(setSaving());
+
+        const fileUploadPromises = [];
+
+        for (const file of files) {
+            fileUploadPromises.push(fileUpload(file));
+        }
+
+        const photosUrls = await Promise.all(fileUploadPromises);
+        console.log(photosUrls);
+
+        dispatch(setPhotosToActiveNote(photosUrls));
+        dispatch(startSaveNote());
     };
 };
