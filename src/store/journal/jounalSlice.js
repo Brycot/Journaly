@@ -6,7 +6,7 @@ export const journalSlice = createSlice({
         isSaving: false,
         messageSaved: '',
         notes: [],
-        active: null,
+        active: null, // es la nota en vista actual
         // active: {   "mock de nota activa"
         //     id: '',
         //     title: '',
@@ -52,8 +52,17 @@ export const journalSlice = createSlice({
                 ...action.payload,
             ];
         },
+        clearNotesLogout: (state) => {
+            state.isSaving = false;
+            state.messageSaved = '';
+            state.notes = [];
+            state.active = null;
+        },
         deleteNoteById: (state, action) => {
-            //
+            state.notes = state.notes.filter(
+                (note) => note.id !== action.payload
+            );
+            state.active = null;
         },
     },
 });
@@ -66,5 +75,6 @@ export const {
     setSaving,
     updateNote,
     deleteNoteById,
-    setPhotosToActiveNote
+    clearNotesLogout,
+    setPhotosToActiveNote,
 } = journalSlice.actions;
