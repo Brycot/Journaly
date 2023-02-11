@@ -1,4 +1,3 @@
-import { Password, Rule } from '@mui/icons-material';
 import {
     createUserWithEmailAndPassword,
     GoogleAuthProvider,
@@ -26,7 +25,6 @@ export const singInWithGoogle = async () => {
             uid,
         };
     } catch (error) {
-        const errorCode = error.code;
         const errorMessage = error.message;
 
         return {
