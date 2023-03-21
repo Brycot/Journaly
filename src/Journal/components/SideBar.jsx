@@ -17,7 +17,6 @@ export const SideBar = ({ drawerWidth = 240 }) => {
     const { displayName = '' } = useSelector((state) => state.auth);
     const { open } = useSelector((state) => state.ui);
     const { notes = [] } = useSelector((state) => state.journal);
-
     const onToggleSideBar = () => {
         dispatch(toggleSideBar());
     };
@@ -27,7 +26,8 @@ export const SideBar = ({ drawerWidth = 240 }) => {
             sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
         >
             <Drawer
-                open={open}
+                variant="permanent" // temporary
+                open
                 sx={{
                     display: { xs: 'block' },
                     '& .MuiDrawer-paper': {
@@ -37,19 +37,12 @@ export const SideBar = ({ drawerWidth = 240 }) => {
                 }}
             >
                 <Toolbar>
-                    <IconButton
-                        onClick={onToggleSideBar}
-                        color="inherit"
-                        edge="start"
-                        sx={{ mr: 2, display: { sm: 'none' } }}
-                    >
-                        <MenuOpenOutlined />
-                    </IconButton>
-                    <Typography variant="h6" component="div">
+                    <Typography variant="h6" noWrap component="div">
                         {displayName}
                     </Typography>
                 </Toolbar>
                 <Divider />
+
                 <List>
                     {notes.map((note) => (
                         <SideBarItem key={note.id} {...note} />
